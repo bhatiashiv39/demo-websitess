@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admissions — Rohtak Public School</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">RPS</span>
+      <span class="brand-text">
+        <span class="name">Rohtak Public School</span>
+        <span class="place">Rohtak, Haryana</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="notices.html">Notices</a>
+      <a href="admissions.html" aria-current="page">Admissions</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+      <a href="admin.html">Staff Login</a>
+    </nav>
+  </div>
+</header>
+
+<section style="padding-top:44px;">
+  <div class="wrap grid-2">
+    <div>
+      <span class="eyebrow">Session 2026&ndash;27</span>
+      <h1>Admissions</h1>
+      <p>Seats are open for Nursery through Class XI. Submit an enquiry and the admissions office will call you within two working days with the next steps and a campus visit slot.</p>
+      <table style="margin-top:24px;">
+        <tr><th>Age for Nursery</th><td>3+ years as on 31 March 2026</td></tr>
+        <tr><th>Documents needed</th><td>Birth certificate, Aadhaar, previous report card</td></tr>
+        <tr><th>Registration fee</th><td>&#8377;500 (one-time, non-refundable)</td></tr>
+        <tr><th>Office hours</th><td>9:00 AM &ndash; 3:00 PM, Mon&ndash;Sat</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Admission enquiry</h3>
+      <p class="form-note">Fields marked * are required.</p>
+      <form class="stack" id="admission-form">
+        <div class="field">
+          <label for="parent_name">Parent / guardian name *</label>
+          <input type="text" id="parent_name" name="parent_name" required>
+        </div>
+        <div class="field">
+          <label for="student_name">Student name *</label>
+          <input type="text" id="student_name" name="student_name" required>
+        </div>
+        <div class="field">
+          <label for="class_applying">Class applying for *</label>
+          <select id="class_applying" name="class_applying" required>
+            <option value="">Select class</option>
+            <option>Nursery</option><option>LKG</option><option>UKG</option>
+            <option>Class I</option><option>Class II</option><option>Class III</option>
+            <option>Class IV</option><option>Class V</option><option>Class VI</option>
+            <option>Class VII</option><option>Class VIII</option><option>Class IX</option>
+            <option>Class X</option><option>Class XI</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="phone">Phone number *</label>
+          <input type="tel" id="phone" name="phone" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Anything you'd like the admissions office to know"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit enquiry</button>
+        <div class="form-status" id="form-status"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div><strong>Rohtak Public School</strong><br>Model Town, Rohtak, Haryana 124001</div>
+    <div><a href="index.html">Home</a><br><a href="contact.html">Contact</a></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const form = document.getElementById("admission-form");
+  const status = document.getElementById("form-status");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = {
+      parent_name: form.parent_name.value.trim(),
+      student_name: form.student_name.value.trim(),
+      class_applying: form.class_applying.value,
+      phone: form.phone.value.trim(),
+      email: form.email.value.trim() || null,
+      message: form.message.value.trim() || null,
+    };
+
+    const { error } = await supabaseClient.from("admission_enquiries").insert(payload);
+
+    status.classList.remove("ok", "err");
+    if (error) {
+      status.textContent = "Something went wrong submitting your enquiry. Please call the school office instead.";
+      status.classList.add("err", "show");
+    } else {
+      status.textContent = "Enquiry received. The admissions office will call you within two working days.";
+      status.classList.add("ok", "show");
+      form.reset();
+    }
+  });
+</script>
+</body>
+</html>

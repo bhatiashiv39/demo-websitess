@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notices — Rohtak Public School</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">RPS</span>
+      <span class="brand-text">
+        <span class="name">Rohtak Public School</span>
+        <span class="place">Rohtak, Haryana</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="notices.html" aria-current="page">Notices</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+      <a href="admin.html">Staff Login</a>
+    </nav>
+  </div>
+</header>
+
+<section style="padding-top:44px;">
+  <div class="wrap">
+    <span class="eyebrow">Circulars &amp; announcements</span>
+    <h1>All notices</h1>
+    <p class="lede" style="max-width:60ch; color:var(--ink-70);">Fee due-dates, holiday lists, exam schedules, and event announcements, newest first.</p>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div id="notice-list">
+      <div class="empty-state">Loading notices&hellip;</div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div><strong>Rohtak Public School</strong><br>Model Town, Rohtak, Haryana 124001</div>
+    <div><a href="index.html">Home</a><br><a href="contact.html">Contact</a></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/main.js"></script>
+<script>
+  async function loadNotices() {
+    const list = document.getElementById("notice-list");
+    const { data, error } = await supabaseClient
+      .from("notices")
+      .select("id, title, summary, published_at")
+      .order("published_at", { ascending: false });
+
+    if (error) {
+      list.innerHTML = `<div class="empty-state">Couldn't load notices. Check the Supabase connection in js/supabase-client.js.</div>`;
+      return;
+    }
+    if (!data || data.length === 0) {
+      list.innerHTML = `<div class="empty-state">No notices posted yet.</div>`;
+      return;
+    }
+    list.innerHTML = data.map(n => `
+      <div class="notice-row">
+        <div class="date mono">${formatDate(n.published_at)}</div>
+        <div>
+          <h4>${n.title}</h4>
+          <p>${n.summary || ""}</p>
+        </div>
+      </div>
+    `).join("");
+  }
+  loadNotices();
+</script>
+</body>
+</html>

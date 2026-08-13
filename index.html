@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rohtak Public School — Home</title>
+<meta name="description" content="Rohtak Public School — admissions, notices, and school life.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">RPS</span>
+      <span class="brand-text">
+        <span class="name">Rohtak Public School</span>
+        <span class="place">Rohtak, Haryana</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="notices.html">Notices</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+      <a href="admin.html">Staff Login</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="hero-eyebrow">Session 2026&ndash;27 &middot; Admissions open</span>
+      <h1>Where every notice still gets pinned up.</h1>
+      <p class="lede">A CBSE-affiliated school in Rohtak educating students from Nursery to Class XII. This is a demo site &mdash; circulars below are pulled live from the school's Supabase database.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="admissions.html">Start admission enquiry</a>
+        <a class="btn btn-ghost" href="notices.html">View all notices</a>
+      </div>
+    </div>
+
+    <div class="board" aria-label="Notice board">
+      <span class="board-label">Pinned this week</span>
+      <div id="hero-board">
+        <div class="board-empty">Loading notices&hellip;</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">At a glance</span>
+      <h2>A school run on routine, not paperwork.</h2>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="stat">1,240</div>
+        <div class="stat-label">Students, Nursery&ndash;XII</div>
+      </div>
+      <div class="card">
+        <div class="stat">64</div>
+        <div class="stat-label">Teaching staff</div>
+      </div>
+      <div class="card">
+        <div class="stat">1998</div>
+        <div class="stat-label">Established</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--paper-dim);">
+  <div class="wrap grid-2">
+    <div>
+      <span class="eyebrow">Why families choose us</span>
+      <h2>Academics, activities, and attention.</h2>
+      <p>Smart classrooms, a resident sports faculty, and a counsellor on campus every school day. Circulars, fee due-dates, and holiday lists are posted here as they're issued &mdash; no separate app to check.</p>
+      <a class="btn btn-dark" href="admissions.html">See admission process</a>
+    </div>
+    <div>
+      <table>
+        <tr><th>Board</th><td>CBSE, Delhi</td></tr>
+        <tr><th>Medium</th><td>English</td></tr>
+        <tr><th>Classes</th><td>Nursery to XII (Science &amp; Commerce)</td></tr>
+        <tr><th>School hours</th><td>8:00 AM &ndash; 2:15 PM, Mon&ndash;Sat</td></tr>
+        <tr><th>Transport</th><td>Covers 12 routes across Rohtak</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>Rohtak Public School</strong><br>
+      Model Town, Rohtak, Haryana 124001<br>
+      <a href="tel:+911262000000">01262-000000</a> &middot; <a href="mailto:info@rpsrohtak.example">info@rpsrohtak.example</a>
+    </div>
+    <div>
+      <a href="notices.html">Notices</a><br>
+      <a href="admissions.html">Admissions</a><br>
+      <a href="admin.html">Staff login</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/main.js"></script>
+<script>
+  async function loadHeroNotices() {
+    const board = document.getElementById("hero-board");
+    const { data, error } = await supabaseClient
+      .from("notices")
+      .select("id, title, summary, published_at")
+      .order("published_at", { ascending: false })
+      .limit(4);
+
+    if (error) {
+      board.innerHTML = `<div class="board-empty">Notices will appear here once the site is connected to Supabase.</div>`;
+      return;
+    }
+    if (!data || data.length === 0) {
+      board.innerHTML = `<div class="board-empty">No notices posted yet.</div>`;
+      return;
+    }
+    board.innerHTML = data.map(n => `
+      <div class="pin-card">
+        <span class="date">${formatDate(n.published_at)}</span>
+        <h4>${n.title}</h4>
+        <p>${n.summary || ""}</p>
+      </div>
+    `).join("");
+  }
+  loadHeroNotices();
+</script>
+</body>
+</html>

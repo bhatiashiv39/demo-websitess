@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Rohtak Public School</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">RPS</span>
+      <span class="brand-text">
+        <span class="name">Rohtak Public School</span>
+        <span class="place">Rohtak, Haryana</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="notices.html">Notices</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html" aria-current="page">Contact</a>
+      <a href="admin.html">Staff Login</a>
+    </nav>
+  </div>
+</header>
+
+<section style="padding-top:44px;">
+  <div class="wrap grid-2">
+    <div>
+      <span class="eyebrow">Get in touch</span>
+      <h1>Contact</h1>
+      <table>
+        <tr><th>Address</th><td>Model Town, Rohtak, Haryana 124001</td></tr>
+        <tr><th>Phone</th><td>01262-000000</td></tr>
+        <tr><th>Email</th><td>info@rpsrohtak.example</td></tr>
+        <tr><th>Office hours</th><td>9:00 AM &ndash; 3:00 PM, Mon&ndash;Sat</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Send a message</h3>
+      <form class="stack" id="contact-form">
+        <div class="field">
+          <label for="name">Your name *</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="message">Message *</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Send message</button>
+        <div class="form-status" id="form-status"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div><strong>Rohtak Public School</strong><br>Model Town, Rohtak, Haryana 124001</div>
+    <div><a href="index.html">Home</a><br><a href="admissions.html">Admissions</a></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const form = document.getElementById("contact-form");
+  const status = document.getElementById("form-status");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = {
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      message: form.message.value.trim(),
+    };
+    const { error } = await supabaseClient.from("contact_messages").insert(payload);
+
+    status.classList.remove("ok", "err");
+    if (error) {
+      status.textContent = "Something went wrong sending your message. Please call the school office instead.";
+      status.classList.add("err", "show");
+    } else {
+      status.textContent = "Message sent. We'll get back to you soon.";
+      status.classList.add("ok", "show");
+      form.reset();
+    }
+  });
+</script>
+</body>
+</html>
